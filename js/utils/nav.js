@@ -10,14 +10,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (profile) {
     authButton.textContent = "Profile";
-    authButton.href = "profile.html";
+    - authButton.href = "profile.html";
+    + authButton.href = "/profile";
 
     if (creditsDisplay) {
       creditsDisplay.textContent = `Credits: ${profile.credits}`;
     }
   } else {
     authButton.textContent = "Login";
-    authButton.href = "login.html";
+    - authButton.href = "login.html";
+    + authButton.href = "/login";
 
     if (creditsDisplay) creditsDisplay.textContent = "";
   }

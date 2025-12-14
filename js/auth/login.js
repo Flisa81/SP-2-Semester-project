@@ -51,7 +51,9 @@ form.addEventListener("submit", async (e) => {
 
     saveToStorage("profile", profile);
 
-    window.location.href = "profile.html";
+    - window.location.href = "profile.html";
+    + window.location.href = "/profile";
+
 
   } catch (error) {
     console.error("LOGIN ERROR:", error);
