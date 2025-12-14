@@ -15,8 +15,7 @@ Auction House is a fully functional and responsive auction platform built using 
 - 📋 Kanban Board: https://github.com/Flisa81/SP-2-Semester-project/projects?query=is%3Aopen
 - 🎨 Design & UX Report (PDF): ./Design_UX_Report_Auction_House_Felicia.F.B.pdf
 - 💻 GitHub Repository: https://github.com/Flisa81/SP-2-Semester-project
-- 🚀 Deployed Application: <ADD YOUR DEPLOYED LINK HERE>
-
+- 🚀 Deployed Application: https://sp2-auction-house.netlify.app
 
 ### Project Focus
 - Clean and accessible UI/UX  

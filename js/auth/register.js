@@ -25,10 +25,24 @@ form.addEventListener("submit", async (e) => {
 
     alert("Registration successful! Redirecting to login page...");
 
-    window.location.href = "login.html";
+    window.location.href = "/login";
 
   } catch (error) {
     console.error("REGISTER ERROR:", error);
-    alert(error.message);
+
+    const msg =
+      error?.errors?.[0]?.message ||
+      error?.message ||
+      "Registration failed. Please try again.";
+
+    alert(msg);
   }
+
+  const result = await apiRequest("/auth/register", "POST", {
+    name,
+    email,
+    password,
+    bio: "",
+    avatar: { url: "", alt: "" },
+    banner: { url: "", alt: "" },
 });
