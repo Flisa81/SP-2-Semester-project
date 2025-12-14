@@ -17,14 +17,23 @@ form.addEventListener("submit", async (e) => {
   const description = document.getElementById("description").value.trim();
   const mediaUrl = document.getElementById("mediaUrl").value.trim();
   const tagsInput = document.getElementById("tags").value.trim();
-  const endsAt = document.getElementById("endsAt").value;
+  const endsAtValue = document.getElementById("endsAt").value;
+  const endsAt = endsAtValue ? new Date(endsAtValue).toISOString() : null;
+
+
+  if (!endsAt) {
+    showMessage("End date is required.", "warning");
+    return;
+  }
+
 
   // Convert tags from comma-separated string to array
   const tags = tagsInput
     ? tagsInput.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean)
     : [];
 
-  const media = mediaUrl ? [{ url: mediaUrl, alt: title }] : [];
+  const media = mediaUrl ? [{ url: mediaUrl, alt: title || "Listing image" }] : [];
+
 
   // Prepare listing payload
   const listingData = {

@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     container.innerHTML = listings.map(listing => `
       <div class="col-md-4 mb-4">
         <div class="card h-100 shadow-sm">
-          <img src="${listing.media?.[0]?.url || './images/default.jpg'}" class="card-img-top" alt="${listing.media?.[0]?.alt || 'Listing'}">
+         <img src="${listing.media?.[0]?.url || 'https://placehold.co/600x400?text=No+Image'}" class="card-img-top" alt="${listing.media?.[0]?.alt || listing.title || 'Listing image'}">
           <div class="card-body">
             <h5 class="card-title">${listing.title}</h5>
             <p>${listing.description || "No description available"}</p>

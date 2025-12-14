@@ -1,51 +1,63 @@
-import { API_AUCTION } from "../utils/constants.js";
-import { load, save } from "../utils/storage.js";
+import { apiRequest } from "../utils/api.js";
+import { getFromStorage, saveToStorage } from "../utils/storage.js";
 
-const token = load("token");
-const username = load("profile")?.name; // stored when user logs in
+export function setupEditProfileForm() {
+  const token = getFromStorage("token");
+  const profile = getFromStorage("profile");
+  const username = profile?.name;
 
-const form = document.querySelector("#editProfileForm");
-const feedback = document.querySelector("#editProfileFeedback");
+  if (!token || !username) {
+    window.location.href = "login.html";
+    return;
+  }
 
-if (!token || !username) {
-  window.location.href = "/login.html";
-}
+  const form = document.querySelector("#editProfileForm");
+  const feedback = document.querySelector("#editProfileFeedback");
+  if (!form) return;
 
-if (form) {
+  // Prefill form from stored profile (nice UX)
+  form.bio.value = profile?.bio || "";
+  form.avatarUrl.value = profile?.avatar?.url || "";
+  form.avatarAlt.value = profile?.avatar?.alt || "";
+  form.bannerUrl.value = profile?.banner?.url || "";
+  form.bannerAlt.value = profile?.banner?.alt || "";
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    feedback.innerHTML = "";
+    if (feedback) feedback.innerHTML = "";
 
-    const avatarUrl = form.avatar.value.trim();
+    const bio = form.bio.value.trim();
 
-    if (!avatarUrl) {
-      feedback.innerHTML = `<div class="alert alert-warning">Please enter an avatar URL.</div>`;
-      return;
-    }
+    const avatarUrl = form.avatarUrl.value.trim();
+    const avatarAlt = form.avatarAlt.value.trim();
+
+    const bannerUrl = form.bannerUrl.value.trim();
+    const bannerAlt = form.bannerAlt.value.trim();
+
+    // Build payload (only include avatar/banner if url is provided)
+    const payload = {
+      bio,
+      ...(avatarUrl ? { avatar: { url: avatarUrl, alt: avatarAlt || "" } } : {}),
+      ...(bannerUrl ? { banner: { url: bannerUrl, alt: bannerAlt || "" } } : {}),
+    };
 
     try {
-      const res = await fetch(`${API_AUCTION}/profiles/${username}/media`, {
+      // ✅ v2 Auction profile update endpoint pattern
+      const res = await apiRequest(`/auction/profiles/${username}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ avatar: avatarUrl }),
+        body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      // res.data should be the updated profile
+      saveToStorage("profile", res.data);
 
-      if (!res.ok) throw new Error(data.errors?.[0]?.message || "Failed to update profile");
-
-      // Update local storage with new avatar
-      const profile = load("profile") || {};
-      profile.avatar = avatarUrl;
-      save("profile", profile);
-
-      feedback.innerHTML = `<div class="alert alert-success">Profile updated successfully!</div>`;
-      form.reset();
+      if (feedback) {
+        feedback.innerHTML = `<div class="alert alert-success">Profile updated successfully!</div>`;
+      }
     } catch (err) {
-      feedback.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+      if (feedback) {
+        feedback.innerHTML = `<div class="alert alert-danger">${err.message || "Failed to update profile"}</div>`;
+      }
     }
   });
 }

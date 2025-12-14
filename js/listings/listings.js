@@ -68,7 +68,8 @@ function renderListings(list) {
 
   container.innerHTML = list
     .map((listing) => {
-      const img = listing.media?.[0]?.url || "./images/default.jpg";
+      const img = listing.media?.[0]?.url || "https://placehold.co/600x400?text=No+Image";
+
       const endsAt = new Date(listing.endsAt);
       const isActive = endsAt > new Date();
 
