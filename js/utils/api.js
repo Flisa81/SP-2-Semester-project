@@ -10,31 +10,39 @@ export async function apiRequest(
   const storedToken = localStorage.getItem("token");
   const storedApiKey = localStorage.getItem("apiKey");
 
-  const headers = {
-    "Content-Type": "application/json",
-  };
+  const headers = {};
 
-  // --- ALWAYS USE tokenOverride for Authorization when provided ---
-  if (tokenOverride) {
-    headers["Authorization"] = `Bearer ${tokenOverride}`;
-  }
-  else if (auth && storedToken) {
-    headers["Authorization"] = `Bearer ${storedToken}`;
+  // Only set Content-Type when sending JSON body
+  if (body !== null) {
+    headers["Content-Type"] = "application/json";
   }
 
-  // --- API key only when auth = true AND apiKey exists ---
+  // Authorization header
+  const tokenToUse = tokenOverride || (auth ? storedToken : null);
+  if (tokenToUse) {
+    headers["Authorization"] = `Bearer ${tokenToUse}`;
+  }
+
+  // API key header (only for authenticated endpoints that require it)
   if (auth && storedApiKey) {
     headers["X-Noroff-API-Key"] = storedApiKey;
   }
 
   const options = { method, headers };
-  if (body) options.body = JSON.stringify(body);
+  if (body !== null) {
+    options.body = JSON.stringify(body);
+  }
 
-  const response = await fetch(API_BASE + endpoint, options);
-  const result = await response.json();
+  const response = await fetch(`${API_BASE}${endpoint}`, options);
+
+  // Some responses might have no body
+  const result = await response.json().catch(() => null);
 
   if (!response.ok) {
-    throw new Error(result.errors?.[0]?.message || "API Error");
+    // Throw the *actual* API error object so caller can inspect errors[0].message
+    const err = result || { message: `API Error (${response.status})` };
+    err.status = response.status;
+    throw err;
   }
 
   return result;

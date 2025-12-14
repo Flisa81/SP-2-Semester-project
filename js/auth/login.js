@@ -6,57 +6,55 @@ import { saveToStorage } from "../utils/storage.js";
 const form = document.getElementById("loginForm");
 console.log("FORM FOUND?", form);
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  console.log("FORM SUBMIT FIRED!");
+if (form) {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    console.log("FORM SUBMIT FIRED!");
 
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-  try {
-    // LOGIN
-    const loginRes = await apiRequest("/auth/login", "POST", { email, password });
-    console.log("LOGIN RESPONSE:", loginRes);
+    try {
+      // 1) LOGIN
+      const loginRes = await apiRequest("/auth/login", "POST", { email, password });
+      console.log("LOGIN RESPONSE:", loginRes);
 
-    const token = loginRes.data.accessToken;
-    const name = loginRes.data.name;
+      const token = loginRes.data.accessToken;
+      const name = loginRes.data.name;
 
-    // CREATE API KEY (requires Authorization)
-    const apiKeyRes = await apiRequest(
-      "/auth/create-api-key",
-      "POST",
-      {},
-      true,
-      token
-    );
-    console.log("API KEY RESPONSE:", apiKeyRes);
+      // 2) CREATE API KEY (requires Authorization)
+      const apiKeyRes = await apiRequest("/auth/create-api-key", "POST", {}, true, token);
+      console.log("API KEY RESPONSE:", apiKeyRes);
 
-    const apiKey = apiKeyRes.data.key;
+      const apiKey = apiKeyRes.data.key;
 
-    // SAVE token and API KEY *before* making profile request
-    saveToStorage("token", token);
-    saveToStorage("apiKey", apiKey);
+      // 3) SAVE token + apiKey
+      saveToStorage("token", token);
+      saveToStorage("apiKey", apiKey);
 
-    // GET PROFILE (now API key IS stored, so request succeeds)
-    const profileRes = await apiRequest(
-      `/auction/profiles/${name}?_listings=true&_wins=true`,
-      "GET",
-      null,
-      true,
-      token
-    );
-    console.log("PROFILE RESPONSE:", profileRes);
+      // 4) GET PROFILE
+      const profileRes = await apiRequest(
+        `/auction/profiles/${name}?_listings=true&_wins=true`,
+        "GET",
+        null,
+        true,
+        token
+      );
+      console.log("PROFILE RESPONSE:", profileRes);
 
-    const profile = profileRes.data;
+      saveToStorage("profile", profileRes.data);
 
-    saveToStorage("profile", profile);
+      // 5) REDIRECT (Netlify-safe)
+      window.location.href = "/profile";
+    } catch (error) {
+      console.error("LOGIN ERROR:", error);
 
-    - window.location.href = "profile.html";
-    + window.location.href = "/profile";
+      const msg =
+        error?.errors?.[0]?.message ||
+        error?.message ||
+        "Login failed. Please try again.";
 
-
-  } catch (error) {
-    console.error("LOGIN ERROR:", error);
-    alert(error.message);
-  }
-});
+      alert(msg);
+    }
+  });
+}
