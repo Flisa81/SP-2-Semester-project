@@ -21,8 +21,6 @@ if (form) {
         email,
         password,
         bio: "",
-        avatar: { url: "", alt: "" },
-        banner: { url: "", alt: "" },
       });
 
       console.log("Registration Success:", result);
