@@ -5,44 +5,38 @@ import { apiRequest } from "../utils/api.js";
 const form = document.getElementById("registerForm");
 console.log("REGISTER FORM FOUND:", form);
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+if (form) {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  const name = document.getElementById("name").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-  console.log("Registering:", { name, email, password });
+    console.log("Registering:", { name, email });
 
-  try {
-    const result = await apiRequest("/auth/register", "POST", {
-      name,
-      email,
-      password,
-    });
+    try {
+      const result = await apiRequest("/auth/register", "POST", {
+        name,
+        email,
+        password,
+        bio: "",
+        avatar: { url: "", alt: "" },
+        banner: { url: "", alt: "" },
+      });
 
-    console.log("Registration Success:", result);
+      console.log("Registration Success:", result);
+      alert("Registration successful! Redirecting to login page...");
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("REGISTER ERROR:", error);
 
-    alert("Registration successful! Redirecting to login page...");
+      const msg =
+        error?.errors?.[0]?.message ||
+        error?.message ||
+        "Registration failed. Please try again.";
 
-    window.location.href = "/login";
-
-  } catch (error) {
-    console.error("REGISTER ERROR:", error);
-
-    const msg =
-      error?.errors?.[0]?.message ||
-      error?.message ||
-      "Registration failed. Please try again.";
-
-    alert(msg);
-  }
-
-  const result = await apiRequest("/auth/register", "POST", {
-    name,
-    email,
-    password,
-    bio: "",
-    avatar: { url: "", alt: "" },
-    banner: { url: "", alt: "" },
-});
+      alert(msg);
+    }
+  });
+}
