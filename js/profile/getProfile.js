@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
 
     const profile = res.data;
-    // ✅ Get listings the user has bid on (required by brief)
+    // Get listings the user has bid on
     const listingsRes = await apiRequest("/auction/listings?_bids=true&limit=100", "GET");
     const allListings = listingsRes.data || [];
 

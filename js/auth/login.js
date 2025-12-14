@@ -22,7 +22,7 @@ if (form) {
       const token = loginRes.data.accessToken;
       const name = loginRes.data.name;
 
-      // 2) CREATE API KEY (requires Authorization)
+      // 2) CREATE API KEY 
       const apiKeyRes = await apiRequest("/auth/create-api-key", "POST", {}, true, token);
       console.log("API KEY RESPONSE:", apiKeyRes);
 

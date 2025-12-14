@@ -1,17 +1,22 @@
 import { getFromStorage } from "./utils/storage.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  - const user = getFromStorage("user");
-  + const user = getFromStorage("profile");
+  const user = getFromStorage("profile");
   const creditsEl = document.getElementById("userCredits");
+  const authButton = document.getElementById("authButton");
+
+  if (!authButton) return;
 
   if (user) {
-    creditsEl.textContent = `Credits: ${user.credits || 0}`;
-    document.querySelector(".btn-outline-light").textContent = "Logout";
-    document.querySelector(".btn-outline-light").addEventListener("click", () => {
+    if (creditsEl) {
+      creditsEl.textContent = `Credits: ${user.credits ?? 0}`;
+    }
+
+    authButton.textContent = "Logout";
+    authButton.addEventListener("click", (e) => {
+      e.preventDefault();
       localStorage.clear();
-      - window.location.href = "index.html";
-      + window.location.href = "/";
+      window.location.href = "/"; // Netlify-safe
     });
   }
 });

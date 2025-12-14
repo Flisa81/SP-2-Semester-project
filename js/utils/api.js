@@ -23,7 +23,7 @@ export async function apiRequest(
     headers["Authorization"] = `Bearer ${tokenToUse}`;
   }
 
-  // API key header (only for authenticated endpoints that require it)
+  // API key header 
   if (auth && storedApiKey) {
     headers["X-Noroff-API-Key"] = storedApiKey;
   }

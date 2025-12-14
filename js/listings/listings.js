@@ -17,7 +17,7 @@ let currentOrder = "desc";
 let currentTag = "";
 const limit = 9;
 
-// 🧩 Fetch listings (supports search, filter, sort, tags, and pagination)
+//  Fetch listings (supports search, filter, sort, tags, and pagination)
 async function fetchListings({
   query = "",
   status = "all",
@@ -57,7 +57,7 @@ async function fetchListings({
   }
 }
 
-// 🖼️ Render listings with tag badges
+// Render listings with tag badges
 function renderListings(list) {
   if (!list || list.length === 0) {
     container.innerHTML = `<p class="text-center text-muted">No listings found.</p>`;
@@ -73,7 +73,7 @@ function renderListings(list) {
       const endsAt = new Date(listing.endsAt);
       const isActive = endsAt > new Date();
 
-      // 🔖 Render tags as clickable badges
+      // Render tags as clickable badges
       const tags =
         listing.tags && listing.tags.length
           ? listing.tags
@@ -109,7 +109,7 @@ function renderListings(list) {
   attachTagClickHandlers();
 }
 
-// 🔗 Handle tag clicks dynamically
+// Handle tag clicks dynamically
 function attachTagClickHandlers() {
   const tagButtons = document.querySelectorAll(".tag-badge");
   tagButtons.forEach((btn) => {
@@ -138,7 +138,7 @@ function updatePagination(meta) {
   }
 }
 
-// 🔍 Search / Filter Submit
+// Search / Filter Submit
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   currentQuery = searchInput.value.trim();
@@ -154,7 +154,7 @@ form.addEventListener("submit", (e) => {
   });
 });
 
-// 📜 Load More
+// Load More
 loadMoreBtn.addEventListener("click", () => {
   if (currentPage < totalPages) {
     currentPage++;
@@ -168,5 +168,5 @@ loadMoreBtn.addEventListener("click", () => {
   }
 });
 
-// 🏁 Initial load
+// Initial load
 fetchListings();

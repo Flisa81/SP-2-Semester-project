@@ -15,7 +15,7 @@ export function setupEditProfileForm() {
   const feedback = document.querySelector("#editProfileFeedback");
   if (!form) return;
 
-  // Prefill form from stored profile (nice UX)
+  // Prefill form from stored profile 
   form.bio.value = profile?.bio || "";
   form.avatarUrl.value = profile?.avatar?.url || "";
   form.avatarAlt.value = profile?.avatar?.alt || "";
@@ -34,7 +34,7 @@ export function setupEditProfileForm() {
     const bannerUrl = form.bannerUrl.value.trim();
     const bannerAlt = form.bannerAlt.value.trim();
 
-    // Build payload (only include avatar/banner if url is provided)
+    // Build payload 
     const payload = {
       bio,
       ...(avatarUrl ? { avatar: { url: avatarUrl, alt: avatarAlt || "" } } : {}),
@@ -42,7 +42,7 @@ export function setupEditProfileForm() {
     };
 
     try {
-      // ✅ v2 Auction profile update endpoint pattern
+      // v2 Auction profile update endpoint pattern
       const res = await apiRequest(`/auction/profiles/${username}`, {
         method: "PUT",
         body: JSON.stringify(payload),
