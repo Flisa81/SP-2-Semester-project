@@ -20,10 +20,10 @@ if (form) {
         name,
         email,
         password,
-        bio: "",
       });
 
       console.log("Registration Success:", result);
+
       alert("Registration successful! Redirecting to login page...");
       window.location.href = "/login";
     } catch (error) {
